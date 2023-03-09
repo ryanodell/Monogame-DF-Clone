@@ -23,26 +23,26 @@ namespace MonogameDFClone.Managers {
 
         public bool IsInputAction(eInputAction action) {
             if (action == eInputAction.Right) {
-                return _keyPressed(Keys.Right);
+                return IsKeyPressed(Keys.Right);
             }
             if (action == eInputAction.Left) {
-                return _keyPressed(Keys.Left);
+                return IsKeyPressed(Keys.Left);
             }
             if (action == eInputAction.Up) {
-                return _keyPressed(Keys.Up);
+                return IsKeyPressed(Keys.Up);
             }
             if (action == eInputAction.Down) {
-                return _keyPressed(Keys.Down);
+                return IsKeyPressed(Keys.Down);
             }
             if (action == eInputAction.Select) {
-                return _keyPressed(Keys.Space);
+                return IsKeyPressed(Keys.Space);
             }
             if (action == eInputAction.Combat) {
-                return _keyPressed(Keys.OemTilde);
+                return IsKeyPressed(Keys.OemTilde);
             }
             return false;
         }
-        private static bool _keyPressed(Keys key) {
+        public bool IsKeyPressed(Keys key) {
             return _currentKeyState.IsKeyDown(key) && !_previousKeyState.IsKeyDown(key);
         }
     }
