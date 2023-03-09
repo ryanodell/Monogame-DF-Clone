@@ -14,7 +14,6 @@ namespace MonogameDFClone.Screens {
         private int _rows = 100;
         private int _columns = 100;
         private OverworldSelector _overWorldSelector;
-        private GuiBackground _guiBackground;
         private KeyboardMenu _keyboardMenu;
 
         public override void LoadContent() {
@@ -22,12 +21,18 @@ namespace MonogameDFClone.Screens {
             _worldCamera = new Camera2D(Globals.GameReference.GraphicsDevice);
             _worldCamera.Zoom = 2f;
             _overWorldSelector = new OverworldSelector(true, true);
-            _guiBackground = new GuiBackground(true, true, Vector2.Zero, new Rectangle(0, 0, Globals.GameReference.Graphics.PreferredBackBufferWidth, 275));
             _guiCamera = new Camera2D(Globals.GameReference.GraphicsDevice);
-            _guiCamera.Zoom = 3f;
+            _guiCamera.Zoom = 1f;
             List<KeyboardMenuItem> menuItems = new List<KeyboardMenuItem>();
             menuItems.Add(new KeyboardMenuItem(Keys.A, "Toggle Selector"));
-            menuItems.Add(new KeyboardMenuItem(Keys.B, "Test"));
+            menuItems.Add(new KeyboardMenuItem(Keys.B, "Test Thing"));
+            menuItems.Add(new KeyboardMenuItem(Keys.C, "Buildings"));
+
+            menuItems.Add(new KeyboardMenuItem(Keys.D, "Gross stuff"));
+            menuItems.Add(new KeyboardMenuItem(Keys.E, "Exit"));
+            menuItems.Add(new KeyboardMenuItem(Keys.F, "I said I don't want it right now"));
+
+            menuItems.Add(new KeyboardMenuItem(Keys.G, "REDUX"));
             _keyboardMenu = new KeyboardMenu(true, true, menuItems);
             _keyboardMenu.On_KeyMenuItemSelected += OnKeyboardMenuSelect;
             _guiCamera.LookAt(new Vector2(Globals.GameReference.Graphics.PreferredBackBufferWidth / 2, Globals.GameReference.Graphics.PreferredBackBufferHeight / 2));
@@ -46,7 +51,6 @@ namespace MonogameDFClone.Screens {
             InputManager.Instance.Update(gameTime);
             _overWorldSelector.Update(gameTime);
             _worldCamera.LookAt(_overWorldSelector.Position);
-            //_guiCamera.LookAt(new Vector2(Globals.GameReference.Graphics.PreferredBackBufferWidth / 2, Globals.GameReference.Graphics.PreferredBackBufferHeight / 2));
             _keyboardMenu.Update(gameTime);
         }
 
@@ -59,7 +63,6 @@ namespace MonogameDFClone.Screens {
             spriteBatch.End();
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, _guiCamera?.GetViewMatrix());
-            _guiBackground.Draw(spriteBatch, gameTime);
             _keyboardMenu.Draw(spriteBatch, gameTime);
             spriteBatch.End();
         }
