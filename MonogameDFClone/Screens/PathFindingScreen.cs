@@ -39,8 +39,9 @@ namespace MonogameDFClone.Screens {
         }
 
         protected void OnKeyboardMenuSelect(object sender, KeyboardMenuEventArgs args) {
-            var test = args.SelectedMenu.Text;
-            Console.WriteLine(test);
+            if(args.SelectedMenu.Key == Keys.A) {
+                _overWorldSelector.Visible = !_overWorldSelector.Visible;
+            }
         }
 
         public override void UnloadContent() {
