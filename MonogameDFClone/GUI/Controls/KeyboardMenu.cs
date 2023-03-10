@@ -5,29 +5,35 @@ using MonogameDFClone.Models;
 
 namespace MonogameDFClone.GUI {
     public class KeyboardMenu : GuiItem {
-
+        
         public EventHandler<KeyboardMenuEventArgs> On_KeyMenuItemSelected;
         public List<KeyboardMenuItem> MenuKeys;
+        protected const int distanceBetween = 2;
         private SpriteFont _spriteFont = Globals.GameReference.Content.Load<SpriteFont>("Resources/SDS_8x8");
         private GuiBackground _guiBackground;        
         private Memory<KeyboardMenuItem>[] _memoryChunks;
-        public KeyboardMenu(bool visible, bool active) : base(visible, active) {
-            MenuKeys = new List<KeyboardMenuItem>();
-            _guiBackground = new GuiBackground(true, true, Vector2.Zero, new Rectangle(0, 0, Globals.GameReference.Graphics.PreferredBackBufferWidth, 3 * Globals.TileSize + Globals.TileSize / 2));
-        }
+        public KeyboardMenu() : this(true, true) { }
+        public KeyboardMenu(bool visible, bool active) : this(visible, active, new List<KeyboardMenuItem>()) { }
+        public KeyboardMenu(List<KeyboardMenuItem> menuItems) : this(true, true, menuItems) { }
 
-        public KeyboardMenu(bool visible, bool active, List<KeyboardMenuItem> menuItems)
+        public KeyboardMenu(List<KeyboardMenuItem> menuItems, int colSize) : this(true, true, menuItems, colSize) { }
+
+        public KeyboardMenu(bool visible, bool active, List<KeyboardMenuItem> menuItems, int colSize = 3)
             : base(visible, active) {
+            _guiBackground = new GuiBackground(true, true, Vector2.Zero, new Rectangle(0, 0, Globals.GameReference.Graphics.PreferredBackBufferWidth, 3 * Globals.TileSize + Globals.TileSize / 2));
             MenuKeys = menuItems;
             _guiBackground = new GuiBackground(true, true, Vector2.Zero, new Rectangle(0, 0, Globals.GameReference.Graphics.PreferredBackBufferWidth, 3 * Globals.TileSize + Globals.TileSize / 2));
-            int chunkSize = 3;
-            int numChunks = (int)Math.Ceiling((double)MenuKeys.Count / chunkSize);
+            _setLayout(colSize);
+        }
+
+        private void _setLayout(int colSize) {
+            int numChunks = (int)Math.Ceiling((double)MenuKeys.Count / colSize);
             Memory<KeyboardMenuItem> memory;
             memory = MenuKeys.ToArray().AsMemory();
             _memoryChunks = new Memory<KeyboardMenuItem>[numChunks];
-            for(int i = 0; i < numChunks; i++) {
-                int start = i * chunkSize;
-                int length = Math.Min(chunkSize, MenuKeys.Count - start);
+            for (int i = 0; i < numChunks; i++) {
+                int start = i * colSize;
+                int length = Math.Min(colSize, MenuKeys.Count - start);
                 _memoryChunks[i] = memory.Slice(start, length);
             }
         }
@@ -47,7 +53,6 @@ namespace MonogameDFClone.GUI {
         }
 
         private void _drawKeyboardOptions(SpriteBatch spriteBatch) {
-            int distanceBetween = 2;
             int lastColumnsLongestText = 0;
             int longestText = 0;
             int col = 0;
