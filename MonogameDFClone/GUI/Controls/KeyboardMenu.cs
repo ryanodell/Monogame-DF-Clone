@@ -23,10 +23,10 @@ namespace MonogameDFClone.GUI {
             _guiBackground = new GuiBackground(true, true, Vector2.Zero, new Rectangle(0, 0, Globals.GameReference.Graphics.PreferredBackBufferWidth, 3 * Globals.TileSize + Globals.TileSize / 2));
             MenuKeys = menuItems;
             _guiBackground = new GuiBackground(true, true, Vector2.Zero, new Rectangle(0, 0, Globals.GameReference.Graphics.PreferredBackBufferWidth, 3 * Globals.TileSize + Globals.TileSize / 2));
-            _setLayout(colSize);
+            _chunkOutMenu(colSize);
         }
 
-        private void _setLayout(int colSize) {
+        private void _chunkOutMenu(int colSize) {
             int numChunks = (int)Math.Ceiling((double)MenuKeys.Count / colSize);
             Memory<KeyboardMenuItem> memory;
             memory = MenuKeys.ToArray().AsMemory();
@@ -63,7 +63,8 @@ namespace MonogameDFClone.GUI {
                     spriteBatch.DrawString(_spriteFont, $"{instance.OverrideChar}",
                         new Vector2(col * Globals.TileSize + (lastColumnsLongestText * Globals.TileSize), j * Globals.TileSize), Color.Green);
                     spriteBatch.DrawString(_spriteFont, $"{instance.Text}",
-                        new Vector2(col * Globals.TileSize + (lastColumnsLongestText * Globals.TileSize) + (instance.OverrideChar.Length + distanceBetween * Globals.TileSize), j * Globals.TileSize), Color.White);
+                        new Vector2(col * Globals.TileSize + (lastColumnsLongestText * Globals.TileSize) + (instance.OverrideChar.Length + distanceBetween * Globals.TileSize), 
+                        j * Globals.TileSize), Color.White);
                     int fullLength = instance.OverrideChar.Length + instance.OverrideChar.Length + instance.Text.Length + distanceBetween;
                     if (fullLength > longestText) {
                         longestText = fullLength;

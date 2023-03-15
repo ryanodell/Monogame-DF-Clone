@@ -12,6 +12,10 @@ namespace MonogameDFClone.Core.Tiling {
         public int Row { get; }
         public int Column { get; }
 
+        public int GScore { get; set; }
+        public int FScore { get; set; }
+        public GameCell Parent;
+
         public GameCell(int row, int column) {
             Row = row;
             Column = column;
