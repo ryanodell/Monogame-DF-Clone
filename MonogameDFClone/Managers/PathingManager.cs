@@ -13,13 +13,14 @@ namespace MonogameDFClone.Managers {
         }
 
         public List<GameCell> FindPath(GameCell startingNode, GameCell goalNode) {
+            _setNeighbors();
             List<GameCell> openSet = new List<GameCell>();
             openSet.Add(startingNode);
             Dictionary<GameCell, int> gScore = new Dictionary<GameCell, int> {
                 [startingNode] = 0
             };
             Dictionary<GameCell, int> fScore = new Dictionary<GameCell, int> {
-                [goalNode] = _heuristic(startingNode, goalNode)
+                [startingNode] = _heuristic(startingNode, goalNode)
             };
             while(openSet.Count > 0) {
                 GameCell current = null;
@@ -34,7 +35,8 @@ namespace MonogameDFClone.Managers {
                     return _reconstructPath(current);
                 }
                 openSet.Remove(current);
-                foreach (GameCell neighbor in _getNeighbors(current)) {
+                //foreach (GameCell neighbor in _getNeighbors(current)) {
+                foreach (GameCell neighbor in current.Neighbors) {
                     int tentativeGScore = gScore[current] + 1;
                     if (tentativeGScore < gScore.GetValueOrDefault(neighbor, int.MaxValue)) {
                         neighbor.Parent = current;
@@ -45,7 +47,6 @@ namespace MonogameDFClone.Managers {
                         }
                     }
                 }
-
             }
             return null;
         }
@@ -60,7 +61,14 @@ namespace MonogameDFClone.Managers {
             return path;
         }
 
-        private List<GameCell> _getNeighbors(GameCell current) {
+        private void _setNeighbors() {
+            foreach(var item in Globals.Map.Cells) {
+                item.Value.Neighbors = _getNeighbors(item.Value);
+            }
+        }
+
+
+        public List<GameCell> _getNeighbors(GameCell current) {
             List<GameCell> returnValue = new List<GameCell>();
             int row = current.Row;
             int col = current.Column;

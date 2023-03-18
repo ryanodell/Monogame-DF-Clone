@@ -21,8 +21,9 @@ namespace MonogameDFClone.Core.Tiling {
         }
 
         public void Draw(SpriteBatch spriteBatch, GameCell cell) {
-            spriteBatch.Draw(AssetManager.Instance.Texture, new Vector2(cell.Row * Globals.TileSize, 
-                cell.Column * Globals.TileSize), Rect, Color);
+            spriteBatch.Draw(AssetManager.Instance.Texture, cell.Position, Rect, Color);
+            //spriteBatch.Draw(AssetManager.Instance.Texture, new Vector2(cell.Row * Globals.TileSize, 
+            //    cell.Column * Globals.TileSize), Rect, Color);
         }
     }
 }

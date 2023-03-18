@@ -29,15 +29,19 @@ namespace MonogameDFClone.GUI {
             if (!Active) return;
             if (InputManager.Instance.IsInputAction(eInputAction.Right)) {
                 Column++;
+                Console.WriteLine($"{Column}_{Row}");
             }
             if (InputManager.Instance.IsInputAction(eInputAction.Left)) {
                 Column--;
+                Console.WriteLine($"{Column}_{Row}");
             }
             if (InputManager.Instance.IsInputAction(eInputAction.Down)) {
                 Row++;
+                Console.WriteLine($"{Column}_{Row}");
             }
             if (InputManager.Instance.IsInputAction(eInputAction.Up)) {
                 Row--;
+                Console.WriteLine($"{Column}_{Row}");
             }
             _blinkTimer -= (int)gameTime.ElapsedGameTime.TotalMilliseconds;
             if(_blinkTimer < 0) {

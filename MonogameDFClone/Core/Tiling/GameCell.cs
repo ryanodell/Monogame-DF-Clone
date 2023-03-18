@@ -5,7 +5,8 @@ namespace MonogameDFClone.Core.Tiling {
     public class GameCell {
 
         public int Size { get; set; }
-        public Vector2 Position { get { return new Vector2(Row * Globals.TileSize, Column * Globals.TileSize); } }
+        //public Vector2 Position { get { return new Vector2(Row * Globals.TileSize, Column * Globals.TileSize); } }
+        public Vector2 Position { get { return new Vector2(Column * Globals.TileSize, Row * Globals.TileSize); } }
         public List<GameTile> Tiles { get; set; } = new List<GameTile>();
         public bool Walkable() => Tiles.All(x => x.Walkable);
 
@@ -15,8 +16,9 @@ namespace MonogameDFClone.Core.Tiling {
         public int GScore { get; set; }
         public int FScore { get; set; }
         public GameCell Parent;
+        public List<GameCell> Neighbors = new List<GameCell>();
 
-        public GameCell(int row, int column) {
+        public GameCell(int column, int row) {
             Row = row;
             Column = column;
         }

@@ -15,7 +15,10 @@ namespace MonogameDFClone.Screens {
         private int _columns = 100;
         private OverworldSelector _overWorldSelector;
         private KeyboardMenu _keyboardMenu;
-
+        List<GameCell> _path = new List<GameCell>();
+        List<GameCell> _currentNeighbors = new List<GameCell>();
+        GameCell _startingNode = null;
+        GameCell _goalNode = null;
         public override void LoadContent() {
             Globals.Map = new GameMap(_rows, _columns);
             _worldCamera = new Camera2D(Globals.GameReference.GraphicsDevice);
@@ -25,14 +28,12 @@ namespace MonogameDFClone.Screens {
             _guiCamera.Zoom = 1f;
             List<KeyboardMenuItem> menuItems = new List<KeyboardMenuItem>();
             menuItems.Add(new KeyboardMenuItem(Keys.A, "Toggle Selector"));
-            menuItems.Add(new KeyboardMenuItem(Keys.B, "Test Thing"));
-            menuItems.Add(new KeyboardMenuItem(Keys.C, "Buildings"));
-
-            menuItems.Add(new KeyboardMenuItem(Keys.D, "Gross stuff"));
-            menuItems.Add(new KeyboardMenuItem(Keys.E, "Exit"));
-            menuItems.Add(new KeyboardMenuItem(Keys.F, "I said I don't want it right now"));
-
-            menuItems.Add(new KeyboardMenuItem(Keys.G, "REDUX"));
+            menuItems.Add(new KeyboardMenuItem(Keys.B, "Set Start Node"));
+            menuItems.Add(new KeyboardMenuItem(Keys.C, "Set End Node"));
+            menuItems.Add(new KeyboardMenuItem(Keys.D, "Calculate Path"));
+            menuItems.Add(new KeyboardMenuItem(Keys.E, "Generate New Map"));
+            menuItems.Add(new KeyboardMenuItem(Keys.F, "Generate Neighbors"));
+            menuItems.Add(new KeyboardMenuItem(Keys.X, "Clear"));
             _keyboardMenu = new KeyboardMenu(true, true, menuItems);
             _keyboardMenu.On_KeyMenuItemSelected += OnKeyboardMenuSelect;
             _guiCamera.LookAt(new Vector2(Globals.GameReference.Graphics.PreferredBackBufferWidth / 2, Globals.GameReference.Graphics.PreferredBackBufferHeight / 2));
@@ -41,6 +42,41 @@ namespace MonogameDFClone.Screens {
         protected void OnKeyboardMenuSelect(object sender, KeyboardMenuEventArgs args) {
             if(args.SelectedMenu.Key == Keys.A) {
                 _overWorldSelector.Visible = !_overWorldSelector.Visible;
+            }
+            if(args.SelectedMenu.Key == Keys.B) {
+                _startingNode = Globals.Map.Cells[$"{_overWorldSelector.Column}_{_overWorldSelector.Row}"];
+            }
+            if (args.SelectedMenu.Key == Keys.C) {
+                _goalNode = Globals.Map.Cells[$"{_overWorldSelector.Column}_{_overWorldSelector.Row}"];
+            }
+            if (args.SelectedMenu.Key == Keys.D) {
+                if (_startingNode != null && _goalNode != null) {
+                    var path = PathingManager.Instance.FindPath(_startingNode, _goalNode);
+                    _path = path;
+                    if (path != null) {
+                        foreach (var item in path) {
+                            Console.WriteLine($"{item.Column}_{item.Row}");
+                        }
+                    }
+                }
+            }
+            if (args.SelectedMenu.Key == Keys.E) {
+                Globals.Map = new GameMap(_rows, _columns);
+            }
+            if (args.SelectedMenu.Key == Keys.F) {
+                Console.WriteLine($"Current: {Globals.Map.Cells[$"{_overWorldSelector.Column}_{_overWorldSelector.Row}"].Idx}");
+                var neighbors = PathingManager.Instance._getNeighbors(Globals.Map.Cells[$"{_overWorldSelector.Column}_{_overWorldSelector.Row}"]);
+                _currentNeighbors.Clear();
+                _currentNeighbors = neighbors;
+                //foreach (var thing in neighbors) {
+                //    Console.WriteLine(thing.Idx);
+                //}
+            }
+            if (args.SelectedMenu.Key == Keys.X) {
+                _path.Clear();
+                _currentNeighbors.Clear();
+                _startingNode = null;
+                _goalNode = null;
             }
         }
 
@@ -60,7 +96,19 @@ namespace MonogameDFClone.Screens {
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, _worldCamera?.GetViewMatrix());
             Globals.Map.Draw(spriteBatch);
-            _overWorldSelector.Draw(spriteBatch, gameTime);            
+            _overWorldSelector.Draw(spriteBatch, gameTime);     
+            foreach(var item in _path) {
+                spriteBatch.Draw(AssetManager.Instance.Texture, item.Position, Globals.Rects.LargeX, Color.Orange);
+            }
+            if(_startingNode != null) {
+                spriteBatch.Draw(AssetManager.Instance.Texture, _startingNode.Position, Globals.Rects.Heart, Color.Blue);
+            }
+            if (_goalNode != null) {
+                spriteBatch.Draw(AssetManager.Instance.Texture, _goalNode.Position, Globals.Rects.Heart, Color.Green);
+            }
+            foreach (var neighbor in _currentNeighbors) {
+                spriteBatch.Draw(AssetManager.Instance.Texture, neighbor.Position, Globals.Rects.LargeX, Color.Red);
+            }
             spriteBatch.End();
 
             spriteBatch.Begin(SpriteSortMode.Deferred, BlendState.AlphaBlend, SamplerState.PointClamp, null, null, null, _guiCamera?.GetViewMatrix());
