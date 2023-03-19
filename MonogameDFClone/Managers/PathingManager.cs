@@ -3,6 +3,8 @@
 namespace MonogameDFClone.Managers {
     public class PathingManager {
         private static PathingManager _instance;
+        public bool Diagonal = true;
+        public const int MaxAttempts = 10000;
         public static PathingManager Instance {
             get {
                 if (_instance == null) {
@@ -13,6 +15,7 @@ namespace MonogameDFClone.Managers {
         }
 
         public List<GameCell> FindPath(GameCell startingNode, GameCell goalNode) {
+            int attempts = 0;
             _setNeighbors();
             List<GameCell> openSet = new List<GameCell>();
             openSet.Add(startingNode);
@@ -32,10 +35,10 @@ namespace MonogameDFClone.Managers {
                     }
                 }
                 if(current == goalNode) {
+                    Console.WriteLine("Total Attempts: " + attempts);
                     return _reconstructPath(current);
                 }
                 openSet.Remove(current);
-                //foreach (GameCell neighbor in _getNeighbors(current)) {
                 foreach (GameCell neighbor in current.Neighbors) {
                     int tentativeGScore = gScore[current] + 1;
                     if (tentativeGScore < gScore.GetValueOrDefault(neighbor, int.MaxValue)) {
@@ -46,6 +49,11 @@ namespace MonogameDFClone.Managers {
                             openSet.Add(neighbor);
                         }
                     }
+                    attempts++;
+                }
+                if(attempts > MaxAttempts) {
+                    Console.WriteLine("Path could not be solved. Max attempts have been reached");
+                    return null;
                 }
             }
             return null;
@@ -66,7 +74,6 @@ namespace MonogameDFClone.Managers {
                 item.Value.Neighbors = _getNeighbors(item.Value);
             }
         }
-
 
         public List<GameCell> _getNeighbors(GameCell current) {
             List<GameCell> returnValue = new List<GameCell>();
@@ -90,6 +97,32 @@ namespace MonogameDFClone.Managers {
             if (Globals.Map.Cells.TryGetValue($"{col}_{row + 1}", out var cellToTheBottom)) {
                 if (cellToTheBottom.Walkable()) {
                     returnValue.Add(cellToTheBottom);
+                }
+            }
+            if(Diagonal) {
+                //Top left
+                if (Globals.Map.Cells.TryGetValue($"{col - 1}_{row - 1}", out var cellToTopLeft)) {
+                    if (cellToTopLeft.Walkable()) {
+                        returnValue.Add(cellToTopLeft);
+                    }
+                }
+                //Top right
+                if (Globals.Map.Cells.TryGetValue($"{col + 1}_{row - 1}", out var cellToTopRight)) {
+                    if (cellToTopRight.Walkable()) {
+                        returnValue.Add(cellToTopRight);
+                    }
+                }
+                //Bottom left
+                if (Globals.Map.Cells.TryGetValue($"{col - 1}_{row + 1}", out var cellToBottomLeft)) {
+                    if (cellToBottomLeft.Walkable()) {
+                        returnValue.Add(cellToBottomLeft);
+                    }
+                }
+                //Bottom right
+                if (Globals.Map.Cells.TryGetValue($"{col + 1}_{row + 1}", out var cellToBottomRight)) {
+                    if (cellToBottomRight.Walkable()) {
+                        returnValue.Add(cellToBottomRight);
+                    }
                 }
             }
             return returnValue;
