@@ -6,7 +6,7 @@ using MonogameDFClone.Screens;
 namespace MonogameDFClone {
     public class MainGame : Game {
         public GraphicsDeviceManager Graphics;
-        SpriteBatch spriteBatch;
+        public SpriteBatch spriteBatch;
 
         public MainGame() {
             Graphics = new GraphicsDeviceManager(this);

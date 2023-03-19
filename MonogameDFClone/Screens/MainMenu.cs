@@ -7,7 +7,7 @@ namespace MonogameDFClone.Screens {
     public class MainMenu : ScreenBase {
         private OptionSet _optionSet;
         public override void LoadContent() {
-            _optionSet = new OptionSet(true, true, new List<string>() { "Play", "Pathfinding", "Exit" });
+            _optionSet = new OptionSet(true, true, new List<string>() { "Play", "Pathfinding", "ECS Playground", "Exit" });
             _optionSet.Position = new Vector2((Globals.GameReference.Graphics.PreferredBackBufferWidth / 2) - 6 * Globals.TileSize,
                 Globals.GameReference.Graphics.PreferredBackBufferHeight / 2 - 5 * Globals.TileSize);
             _optionSet.On_IndexChanged += IndexChanged;
@@ -24,6 +24,9 @@ namespace MonogameDFClone.Screens {
             }
             if (args.Text == "Pathfinding") {
                 ScreenManager.Instance.ChangeScreen(new PathFindingScreen());
+            }
+            if (args.Text == "ECS Playground") {
+                ScreenManager.Instance.ChangeScreen(new EcsScreen());
             }
             if (args.Text == "Exit") {
                 Globals.GameReference.Exit();
