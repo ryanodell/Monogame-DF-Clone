@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework.Graphics;
 using MonogameDFClone.Core;
 using MonogameDFClone.Core.Features;
 using MonogameDFClone.Core.Systems;
+using MonogameDFClone.Managers;
 
 namespace MonogameDFClone.Screens {
     public class EcsScreen : ScreenBase {
@@ -21,26 +22,29 @@ namespace MonogameDFClone.Screens {
             _world = new World();
             _world.Set<IParallelRunner>(_runner);
             _system = new SequentialSystem<float>(
-                new MoveSystem(_world, _runner)
+                new PositionSystem(_world, _runner),
+                new PlayerSystem(_world, _runner)
             );
             _drawSystem = new DrawSystem(_world, Globals.GameReference.Content.Load<Texture2D>("Resources/kruggsmash"), _worldCamera);
-
+            
         }
 
         public override void LoadContent() {
-            Entity entity = _world.CreateEntity();
-            entity.Set(new DrawInfo { 
+            Entity player = _world.CreateEntity();
+            player.Set(new DrawInfo { 
                 Color = Color.White, 
                 SourceRectangle = Globals.Rects.Dwarf1 }
             );
-            entity.Set(new Position {
-                Column = 0,
+            player.Set(new Position {
+                Column = 1,
                 Row = 0
             });
+            player.Set<PlayerInput>();
             _world.Optimize();
         }
 
         public override void Update(GameTime gameTime) {
+            InputManager.Instance.Update(gameTime);
             _system.Update((float)gameTime.ElapsedGameTime.TotalMilliseconds);
         }
         public override void Draw(SpriteBatch spriteBatch, GameTime gameTime) {
