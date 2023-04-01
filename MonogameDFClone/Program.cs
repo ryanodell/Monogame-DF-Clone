@@ -1,13 +1,17 @@
-﻿using Microsoft.Xna.Framework;
-using System;
+﻿//using Microsoft.Xna.Framework;
+//using System;
 
-namespace MonogameDFClone;
+//namespace MonogameDFClone;
 
-public static class Program {
+//public static class Program {
 
-    [STAThread]
-    public static void Main(string[] args) {
-        using Game game = new MainGame();
-        game.Run();
-    }
-}
+//    [STAThread]
+//    public static void Main(string[] args) {
+
+
+
+
+//        using Game game = new MainGame();
+//        game.Run();
+//    }
+//}
